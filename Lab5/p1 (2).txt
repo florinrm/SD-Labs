@@ -1,0 +1,178 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct node {
+	int data;
+	struct node *next;
+	struct node *prev;
+}Node;
+typedef struct {
+	Node *start;
+	Node *current;
+}list;
+
+
+Node *append(Node *head,int data);
+Node *remove1(Node *head,int data);
+void print_forward(Node *head);
+void print_backwards(Node *head);
+void insert_mean(Node *head);
+void do_stuff(Node *head);
+list* insert_start1(list *List,int data);
+list* insert_current1(list *List,int data);
+
+int main()
+{
+	/*Node *list = NULL;
+	list = append(list,4);
+	list = append(list,3);
+	list = append(list,6);
+	list = append(list,0);
+	list = append(list,10);
+	list = append(list,1);
+	list = append(list,2);
+	list = append(list,8);
+	list = append(list,5);
+	list = append(list,6);
+	list = append(list,4); */
+	list* best = NULL;
+	best = insert_current1(best,10);
+	best = insert_current1(best,5);
+	//do_stuff(list);
+	//print_forward(list);
+	return 0;
+}
+Node *append(Node *head, int data)
+{
+	if(head == NULL)
+	{
+		head = (Node*)malloc(sizeof(Node));
+		head->data = data;
+		head->prev = NULL;
+		head->next = NULL;
+		return head;
+	}
+	Node *aux = head;
+	while(aux->next != NULL)
+	{
+		aux = aux->next;
+	}
+	Node *new = (Node*)malloc(sizeof(Node));
+	new->data = data;
+	aux->next = new;
+	new->next = NULL;
+	new->prev = aux;
+	return head;
+}
+void print_forward(Node *head)
+{
+	Node* aux = head;
+	while(aux != NULL)
+	{
+		printf("%d\n",aux->data);
+		aux = aux->next;
+	}
+}
+void print_backwards(Node *head)
+{
+	Node* aux = head;
+	while(aux->next != NULL)
+	aux = aux->next;
+	while(aux != NULL)
+	{
+		printf("%d\n",aux->data);
+		aux = aux->prev;
+	}
+}
+void insert_mean(Node *head)
+{
+	Node* prev,*aux;
+	aux = head->next;
+	while(aux->next!= NULL)
+	{
+		prev = aux->prev;
+
+		if((prev->data % 2 == 0 && aux->data % 2 == 0) ||
+		(prev->data % 2 != 0 && aux->data % 2 != 0))
+		{
+			Node *med = (Node*)malloc(sizeof(Node));
+			med->data = (aux->prev->data + aux->next->data)/2;
+			prev->next = med;
+			med->next = aux;
+			aux->prev = med;
+			med->prev = prev;
+		}
+		aux = aux->next;
+	}
+}
+
+Node *remove1(Node *head,int data)
+{
+	if(head == NULL) return NULL;
+	Node *aux,*prev;
+	aux = head;
+	while(aux != NULL && aux->data != data)
+	{
+		prev = aux;
+		aux = aux->next;
+	}
+	prev->next = aux->next;
+	aux->next->prev = prev;
+	free(aux);
+	return head;
+}
+void do_stuff(Node *head)
+{
+	Node* aux = head;
+	Node* previ,*to_del;
+	int nr;
+	while(aux->next != NULL)
+	{
+		if(aux->data % 2 != 0 && aux != NULL)
+		{
+			printf("%d\n",aux->data);
+			to_del = aux;
+			aux->data = nr;
+			aux = aux->prev;
+			head = remove1(head,to_del->data);
+			while(nr != 0 && aux != NULL)
+			{
+				aux = aux -> prev;
+				printf("%d\n",aux->data);
+				nr--;
+			}
+		}
+		printf("%d\n",aux->data);
+		aux = aux->next;
+	}
+}
+list* insert_start1(list *List,int data)
+{
+	if(List->start == NULL)
+	{
+		List->start = (Node*)malloc(sizeof(Node));
+		List->start->data = data;
+		List->start->next =NULL;
+		return List;
+	}
+	Node *new = (Node*)malloc(sizeof(Node));
+	new->data = data;
+	new->next = List->start->next;
+	List->start->next = new;
+	new->prev = List->start;
+	new->next->prev = new;
+	List->current = new;
+	return List;
+}
+list *insert_current1(list *List,int data)
+{
+	Node *new = (Node*)malloc(sizeof(Node));
+	new->data = data;
+	new->next = List->current->next;
+	List->current->next = new;
+	new->prev = List->current;
+	new->next->prev = new;
+	return List;
+}
+
+
+
